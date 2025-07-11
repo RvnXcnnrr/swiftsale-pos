@@ -116,6 +116,15 @@ class UserAPIController extends AppBaseController
         return $this->sendResponse($user->language, 'Language Updated Successfully');
     }
 
+    public function deleteProfileImage(): JsonResponse
+    {
+        $user = Auth::user();
+        $user->clearMediaCollection(User::PATH);
+        $user->media()->delete();
+
+        return $this->sendSuccess('Profile image deleted successfully');
+    }
+
     public function config(Request $request)
     {
         $user = Auth::user();

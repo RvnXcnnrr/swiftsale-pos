@@ -434,7 +434,7 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `name`, `email`, `phone`, `dob`, `country`, `city`, `address`, `created_at`, `updated_at`) VALUES
-(1, 'walk-in-customer', 'customer@infypos.com', '123456789', NULL, 'india', 'mumbai', 'Dr Deshmukh Marg , mumbai', '2023-11-03 23:52:46', '2023-11-03 23:52:46');
+(1, 'walk-in-customer', 'customer@swiftsale.com', '123456789', NULL, 'india', 'mumbai', 'Dr Deshmukh Marg , mumbai', '2023-11-03 23:52:46', '2023-11-03 23:52:46');
 
 -- --------------------------------------------------------
 
@@ -1283,11 +1283,11 @@ INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
 (11, 'expense_code', 'EX', '2023-11-03 23:52:45', '2023-11-03 23:52:45'),
 (12, 'is_currency_right', '0', '2023-11-03 23:52:45', '2023-11-03 23:52:45'),
 (13, 'currency', '1', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
-(14, 'email', 'support@infypos.com', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
-(15, 'company_name', 'infy-pos', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
+(14, 'email', 'support@swiftsale.com', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
+(15, 'company_name', 'SwiftSale POS', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
 (16, 'phone', '1234567890', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
-(17, 'developed', 'infyom', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
-(18, 'footer', '2022 Developed by Infy-pos All rights reserved - v1.1.0', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
+(17, 'developed', 'SwiftSale Team', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
+(18, 'footer', '2024 Developed by SwiftSale POS All rights reserved - v3.0.1', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
 (19, 'default_language', '1', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
 (20, 'default_customer', '1', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
 (21, 'default_warehouse', '1', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
@@ -1303,7 +1303,7 @@ INSERT INTO `settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
 (31, 'smtp_username', 'test', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
 (32, 'smtp_password', 'test', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
 (33, 'smtp_Encryption', 'tls', '2023-11-03 23:52:46', '2023-11-03 23:52:46'),
-(34, 'logo', 'images/infycare-logo.png', '2023-11-03 23:52:46', '2023-11-03 23:52:46');
+(34, 'logo', 'images/swiftsale-logo.png', '2023-11-03 23:52:46', '2023-11-03 23:52:46');
 
 -- --------------------------------------------------------
 
@@ -5614,7 +5614,7 @@ CREATE TABLE `warehouses` (
 --
 
 INSERT INTO `warehouses` (`id`, `name`, `phone`, `country`, `city`, `email`, `zip_code`, `created_at`, `updated_at`) VALUES
-(1, 'warehouse', '123456789', 'india', 'mumbai', 'warehouse1@infypos.com', '12345', '2023-11-03 23:52:46', '2023-11-03 23:52:46');
+(1, 'warehouse', '123456789', 'india', 'mumbai', 'warehouse1@swiftsale.com', '12345', '2023-11-03 23:52:46', '2023-11-03 23:52:46');
 
 --
 -- Indexes for dumped tables

@@ -162,6 +162,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // update user profile
     Route::get('edit-profile', [UserAPIController::class, 'editProfile'])->name('edit-profile');
     Route::post('update-profile', [UserAPIController::class, 'updateProfile'])->name('update-profile');
+    Route::delete('delete-profile-image', [UserAPIController::class, 'deleteProfileImage'])->name('delete-profile-image');
     Route::patch('/change-password', [UserAPIController::class, 'changePassword'])->name('user.changePassword');
 
     //suppliers route

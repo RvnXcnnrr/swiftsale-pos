@@ -37,6 +37,7 @@ export const apiBaseURL = {
     ADMIN_RESET_PASSWORD: "reset-password",
     EDIT_PROFILE: "edit-profile",
     UPDATE_PROFILE: "update-profile",
+    DELETE_PROFILE_IMAGE: "delete-profile-image",
     FRONT_SETTING: "front-setting",
     PRODUCT_IMAGE_DELETE: "products-image-delete",
     CASH_PAYMENT: "sales",
@@ -291,6 +292,7 @@ export const languageActionType = {
 export const profileActionType = {
     FETCH_PROFILE: "FETCH_PROFILE",
     UPDATE_PROFILE: "UPDATE_PROFILE",
+    DELETE_PROFILE_IMAGE: "DELETE_PROFILE_IMAGE",
 };
 
 export const productCategoriesActionType = {

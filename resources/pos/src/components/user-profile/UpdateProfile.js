@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Link, useNavigate} from 'react-router-dom';
 import * as EmailValidator from 'email-validator';
 import ImagePicker from '../../shared/image-picker/ImagePicker';
-import {updateProfile, fetchProfile} from '../../store/action/updateProfileAction';
+import {updateProfile, fetchProfile, deleteProfileImage} from '../../store/action/updateProfileAction';
 import MasterLayout from '../MasterLayout';
 import TabTitle from '../../shared/tab-title/TabTitle';
 import {getAvatarName, getFormattedMessage, numValidate, placeholderText} from '../../shared/sharedMethod';
@@ -50,7 +50,7 @@ const UpdateProfile = () => {
                 phone: userProfile ? userProfile.attributes && userProfile.attributes.phone : '',
                 image: userProfile ? userProfile.attributes && userProfile.attributes.image : '',
             })
-            setImagePreviewUrl(userProfile ? userProfile.attributes && userProfile.attributes.image : user);
+            setImagePreviewUrl(userProfile && userProfile.attributes && userProfile.attributes.image ? userProfile.attributes.image : '');
         }
     }, [userProfile]);
 
@@ -124,6 +124,14 @@ const UpdateProfile = () => {
         }
     };
 
+    const handleDeleteImage = () => {
+        Dispatch(deleteProfileImage());
+        setImagePreviewUrl('');
+        setSelectImg(null);
+        // Also update the profile value to clear the image
+        setProfileValue(prev => ({...prev, image: ''}));
+    };
+
     return (
         <MasterLayout>
             <TopProgressBar />
@@ -136,7 +144,8 @@ const UpdateProfile = () => {
                                 <div className='mb-4'>
                                     <ImagePicker imageTitle={imageTitle} imagePreviewUrl={imagePreviewUrl}
                                                  user={user}
-                                                 avtarName={avtarName} handleImageChange={handleImageChanges}/>
+                                                 avtarName={avtarName} handleImageChange={handleImageChanges}
+                                                 handleDeleteImage={handleDeleteImage}/>
                                 </div>
                             </div>
                             <div className='col-md-6 mb-3'>

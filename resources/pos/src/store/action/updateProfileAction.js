@@ -30,3 +30,16 @@ export const updateProfile = (profile, navigate) => async (dispatch) => {
                 {text: response.data.message, type: toastType.ERROR}));
         });
 };
+
+export const deleteProfileImage = () => async (dispatch) => {
+    apiConfig.delete(apiBaseURL.DELETE_PROFILE_IMAGE)
+        .then((response) => {
+            dispatch({type: profileActionType.DELETE_PROFILE_IMAGE});
+            localStorage.setItem(Tokens.USER_IMAGE_URL, '')
+            dispatch(addToast({text: getFormattedMessage('profile.image.success.delete.message')}));
+        })
+        .catch(({response}) => {
+            dispatch(addToast(
+                {text: response.data.message, type: toastType.ERROR}));
+        });
+};

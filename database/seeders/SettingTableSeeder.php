@@ -17,7 +17,7 @@ class SettingTableSeeder extends Seeder
     {
         Customer::Create([
             'name' => 'walk-in-customer',
-            'email' => 'customer@infypos.com',
+            'email' => 'customer@swiftsale.com',
             'phone' => '123456789',
             'country' => 'india',
             'city' => 'mumbai',
@@ -28,7 +28,7 @@ class SettingTableSeeder extends Seeder
             'phone' => '123456789',
             'country' => 'india',
             'city' => 'mumbai',
-            'email' => 'warehouse1@infypos.com',
+            'email' => 'warehouse1@swiftsale.com',
             'zip_code' => '12345',
         ]);
 
@@ -37,18 +37,18 @@ class SettingTableSeeder extends Seeder
             'code' => 'INR',
             'symbol' => '₹',
         ]);
-        $logoUrl = ('images/infycare-logo.png');
+        $logoUrl = ('images/swiftsale-logo.png');
 
         if (! keyExist('currency')) {
             Setting::create(['key' => 'currency', 'value' => '1']);
         }
 
         if (! keyExist('email')) {
-            Setting::create(['key' => 'email', 'value' => 'support@infypos.com']);
+            Setting::create(['key' => 'email', 'value' => 'support@swiftsale.com']);
         }
 
         if (! keyExist('company_name')) {
-            Setting::create(['key' => 'company_name', 'value' => 'infy-pos']);
+            Setting::create(['key' => 'company_name', 'value' => 'SwiftSale POS']);
         }
 
         if (! keyExist('phone')) {
@@ -56,12 +56,12 @@ class SettingTableSeeder extends Seeder
         }
 
         if (! keyExist('developed')) {
-            Setting::create(['key' => 'developed', 'value' => 'infyom']);
+            Setting::create(['key' => 'developed', 'value' => 'SwiftSale Team']);
         }
 
         if (! keyExist('footer')) {
             Setting::create([
-                'key' => 'footer', 'value' => '2022 Developed by Infy-pos All rights reserved - v1.1.0',
+                'key' => 'footer', 'value' => '2024 Developed by SwiftSale POS All rights reserved - v3.0.1',
             ]);
         }
 

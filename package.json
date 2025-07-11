@@ -1,4 +1,27 @@
 {
+    "name": "swiftsale-pos",
+    "version": "3.0.1",
+    "description": "SwiftSale - Modern Point of Sale (POS) system built with Laravel and React",
+    "author": "SwiftSale Team <support@swiftsale.com>",
+    "homepage": "https://github.com/swiftsale/swiftsale-pos",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/swiftsale/swiftsale-pos.git"
+    },
+    "bugs": {
+        "url": "https://github.com/swiftsale/swiftsale-pos/issues"
+    },
+    "keywords": [
+        "pos",
+        "point-of-sale",
+        "laravel",
+        "react",
+        "inventory",
+        "sales",
+        "retail",
+        "swiftsale"
+    ],
+    "license": "MIT",
     "private": true,
     "scripts": {
         "dev": "npm run development",
