@@ -17,6 +17,11 @@ import {
 } from "../../shared/sharedMethod";
 import { useIntl } from "react-intl";
 import { Tokens } from "../../constants";
+import { ThemeToggle } from "../../contexts/ThemeContext";
+import { useSidebarSettings, SidebarSettingsPanel } from "../../contexts/SidebarSettingsContext";
+import { AdvancedSearchManager } from "../../utils/advancedSearch";
+import { getAnalytics, AnalyticsDashboard } from "../../utils/sidebarAnalytics";
+import { useSidebarTranslations, TRANSLATION_KEYS } from "../../utils/sidebarI18n";
 
 const AsideMenu = (props) => {
     const {
@@ -32,11 +37,142 @@ const AsideMenu = (props) => {
     const intl = useIntl();
     const { id } = useParams();
     const [searchTerm, setSearchTerm] = useState("");
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+    const [searchResults, setSearchResults] = useState([]);
+    const [showSearchHistory, setShowSearchHistory] = useState(false);
+    const [searchSuggestions, setSearchSuggestions] = useState([]);
     const updatedLanguage = localStorage.getItem(Tokens.UPDATED_LANGUAGE);
+
+    // Analytics instance
+    const analytics = getAnalytics();
+
+    // Internationalization
+    const { t } = useSidebarTranslations();
+
+    // Sidebar settings
+    const {
+        settings,
+        addToRecent,
+        getAnimationClass,
+        getSidebarCSSVars
+    } = useSidebarSettings();
+
+    // Advanced search manager
+    const [searchManager] = useState(() => new AdvancedSearchManager({
+        threshold: 0.3,
+        keys: ['title', 'name'],
+        onSelect: (item) => {
+            // Handle item selection
+            if (item.to) {
+                addToRecent(item.name);
+                setSearchTerm("");
+                setShowSearchHistory(false);
+            }
+        },
+        onEscape: () => {
+            setSearchTerm("");
+            setShowSearchHistory(false);
+            setIsSearchFocused(false);
+        }
+    }));
+
+    // Enhanced menu item renderer with notification support
+    const renderMenuIcon = (icon, hasNotification = false, notificationCount = 0) => {
+        if (!settings.showIcons) {
+            return null;
+        }
+
+        return (
+            <div className="menu-icon-wrapper">
+                {icon}
+                {settings.showNotifications && hasNotification && notificationCount > 0 && (
+                    <span className="notification-badge">
+                        {notificationCount > 99 ? '99+' : notificationCount}
+                    </span>
+                )}
+            </div>
+        );
+    };
+
+    // Handle menu item click to track recent items and analytics
+    const handleMenuItemClick = (itemId, itemName, itemPath) => {
+        addToRecent(itemId);
+        analytics.trackMenuClick(itemId, itemName, itemPath);
+    };
+
+    // Check if menu item should show notification (you can customize this logic)
+    const getNotificationCount = (menuName) => {
+        // Example: Show notifications for specific menu items
+        const notifications = {
+            'dashboard': 3,
+            'sales': 5,
+            'products': 2,
+        };
+        return notifications[menuName] || 0;
+    };
+
+    // Enhanced touch gesture handling for mobile
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe && isResponsiveMenu) {
+            // Close sidebar on left swipe
+            menuClick();
+        }
+        if (isRightSwipe && !isResponsiveMenu && window.innerWidth <= 992) {
+            // Open sidebar on right swipe (only if not already open)
+            menuClick();
+        }
+    };
 
     useEffect(() => {
         updateMenu();
     }, [updatedLanguage]);
+
+    // Enhanced keyboard shortcuts for search
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            // Ctrl/Cmd + K to focus search
+            if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+                event.preventDefault();
+                const searchInput = document.getElementById('search');
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }
+            // Escape to clear search
+            if (event.key === 'Escape' && searchTerm) {
+                setSearchTerm("");
+                const searchInput = document.getElementById('search');
+                if (searchInput) {
+                    searchInput.blur();
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [searchTerm]);
 
     // ar MenuHendling
     const updateMenu = () => {
@@ -48,40 +184,82 @@ const AsideMenu = (props) => {
         }
     };
 
-    // search-bar handling
-    const filterMenu = (asideConfig, searchTerm) => {
-        if (!searchTerm) {
+    // Enhanced search handling with advanced features
+    const handleSearchChange = (value) => {
+        setSearchTerm(value);
+
+        if (value.trim()) {
+            setShowSearchHistory(false);
+
+            // Prepare menu items for search
+            const searchableItems = prepareSearchableItems(asideConfig);
+
+            // Use advanced search
+            searchManager.handleSearchInput(value, searchableItems, (results) => {
+                setSearchResults(results);
+                // Track search analytics
+                analytics.trackSearch(value, results.length);
+            });
+        } else {
+            setSearchResults([]);
+            setShowSearchHistory(isSearchFocused);
+            setSearchSuggestions(searchManager.getSearchSuggestions(""));
+        }
+    };
+
+    // Prepare menu items for search
+    const prepareSearchableItems = (config) => {
+        const items = [];
+
+        config.forEach(item => {
+            // Add main item
+            items.push({
+                ...item,
+                searchTitle: intl.formatMessage({ id: item.title }),
+                type: 'main'
+            });
+
+            // Add sub items
+            if (item.newRoute) {
+                item.newRoute.forEach(subItem => {
+                    items.push({
+                        ...subItem,
+                        searchTitle: intl.formatMessage({ id: subItem.title }),
+                        parent: item,
+                        type: 'sub'
+                    });
+                });
+            }
+        });
+
+        return items;
+    };
+
+    // Get filtered menu based on search
+    const getFilteredMenu = () => {
+        if (!searchTerm.trim()) {
             return asideConfig;
         }
-        return asideConfig.filter((post) => {
-            if (post.newRoute || post.subTitles) {
-                if (post.newRoute) {
-                    const allrouth = post.newRoute.map((posts) => {
-                        const postName = intl
-                            .formatMessage({ id: `${posts.title}` })
-                            .toLowerCase();
-                        return postName.includes(searchTerm.toLowerCase());
-                    });
-                    return allrouth.includes(true);
-                } else {
-                    const allrouth = post.subTitles.map((posts) => {
-                        const postName = intl
-                            .formatMessage({ id: `${posts.title}` })
-                            .toLowerCase();
-                        return postName.includes(searchTerm.toLowerCase());
-                    });
-                    return allrouth.includes(true);
-                }
-            } else {
-                const postName = intl
-                    .formatMessage({ id: `${post.title}` })
-                    .toLowerCase();
-                return postName.includes(searchTerm.toLowerCase());
+
+        // Filter original config based on search results
+        const resultIds = searchResults.map(item => item.name || item.title);
+        return asideConfig.filter(item => {
+            if (resultIds.includes(item.name || item.title)) {
+                return true;
             }
+
+            // Check if any sub-items match
+            if (item.newRoute) {
+                return item.newRoute.some(subItem =>
+                    resultIds.includes(subItem.name || subItem.title)
+                );
+            }
+
+            return false;
         });
     };
 
-    const filteredMenu = filterMenu(asideConfig, searchTerm);
+    const filteredMenu = getFilteredMenu();
 
     // side sub-menu handling
     useEffect(() => {
@@ -214,12 +392,22 @@ const AsideMenu = (props) => {
                 collapsed={isMenuCollapse}
                 className={`${
                     isResponsiveMenu === true ? "open-menu" : "hide-menu"
-                } aside-menu-container`}
+                } aside-menu-container ${getAnimationClass()} ${
+                    settings.compactMode ? "sidebar-compact" : ""
+                } sidebar-${settings.menuStyle}`}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+                role="navigation"
+                aria-label="Main navigation"
+                aria-expanded={isResponsiveMenu}
+                style={getSidebarCSSVars()}
             >
                 <SidebarHeader className="aside-menu-container__aside-logo flex-column-auto pb-2 pt-3">
                     <a
                         href="/"
                         className="text-decoration-none sidebar-logo text-gray-900 fs-4"
+                        aria-label="Go to homepage"
                     >
                         <div
                             className={`${
@@ -250,46 +438,160 @@ const AsideMenu = (props) => {
                         type="button"
                         onClick={(e) => menuIconClick(e)}
                         className="btn p-0 fs-1 aside-menu-container__aside-menubar d-lg-block d-none sidebar-btn border-0"
+                        aria-label={isMenuCollapse ? "Expand sidebar" : "Collapse sidebar"}
+                        aria-expanded={!isMenuCollapse}
+                        title={isMenuCollapse ? "Expand sidebar" : "Collapse sidebar"}
                     >
                         <FontAwesomeIcon
                             icon={faBars}
                             className="text-gray-600"
+                            aria-hidden="true"
                         />
                     </button>
                 </SidebarHeader>
-                <SidebarContent className="sidebar-scrolling">
-                    <div
-                        className={`d-flex position-relative aside-menu-container__aside-search search-control ${
-                            isMenuCollapse ? "d-none" : ""
-                        } py-3 mt-1`}
-                    >
-                        <div className="position-relative d-flex w-100">
-                            <input
-                                className={`form-control ps-8 ${
-                                    isMenuCollapse ? "d-none" : ""
-                                }`}
-                                type="search"
-                                id="search"
-                                placeholder={placeholderText(
-                                    "react-data-table.searchbar.placeholder"
-                                )}
-                                aria-label="Search"
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            <span className="position-absolute d-flex align-items-center top-0 bottom-0 left-0 text-gray-600 ms-3">
-                                <FontAwesomeIcon icon={faSearch} />
-                            </span>
+
+                {/* Theme Toggle, Settings, and Analytics */}
+                {!isMenuCollapse && (
+                    <div className="px-3 py-2">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <ThemeToggle />
+                            <div className="d-flex gap-1">
+                                <button
+                                    onClick={() => setIsAnalyticsOpen(true)}
+                                    className="btn btn-sm p-2"
+                                    aria-label="View analytics"
+                                    title="View analytics"
+                                >
+                                    📊
+                                </button>
+                                <button
+                                    onClick={() => setIsSettingsOpen(true)}
+                                    className="btn btn-sm p-2"
+                                    aria-label="Sidebar settings"
+                                    title="Sidebar settings"
+                                >
+                                    ⚙️
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <Menu>
+                )}
+                <SidebarContent className="sidebar-scrolling">
+                    <div
+                        className={`aside-search-enhanced ${
+                            isMenuCollapse ? "d-none" : ""
+                        } ${isSearchFocused ? "search-focused" : ""}`}
+                    >
+                        <div className="position-relative">
+                            <input
+                                className="search-input"
+                                type="search"
+                                id="search"
+                                placeholder={t(TRANSLATION_KEYS.SEARCH.PLACEHOLDER)}
+                                aria-label={t(TRANSLATION_KEYS.SEARCH.PLACEHOLDER)}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                onFocus={() => {
+                                    setIsSearchFocused(true);
+                                    if (!searchTerm.trim()) {
+                                        setShowSearchHistory(true);
+                                        setSearchSuggestions(searchManager.getSearchSuggestions(""));
+                                    }
+                                }}
+                                onBlur={() => {
+                                    // Delay to allow clicking on suggestions
+                                    setTimeout(() => {
+                                        setIsSearchFocused(false);
+                                        setShowSearchHistory(false);
+                                    }, 200);
+                                }}
+                                onKeyDown={(e) => {
+                                    if (showSearchHistory && searchSuggestions.length > 0) {
+                                        searchManager.handleKeyDown(e, searchSuggestions);
+                                    } else if (searchResults.length > 0) {
+                                        searchManager.handleKeyDown(e, searchResults);
+                                    }
+                                }}
+                                value={searchTerm}
+                                autoComplete="off"
+                            />
+                            <span className={`search-icon ${isSearchFocused ? "focused" : ""}`} aria-hidden="true">
+                                <FontAwesomeIcon icon={faSearch} />
+                            </span>
+                            {searchTerm && (
+                                <button
+                                    className="search-clear"
+                                    onClick={() => {
+                                        setSearchTerm("");
+                                        setSearchResults([]);
+                                        setShowSearchHistory(false);
+                                    }}
+                                    aria-label={t(TRANSLATION_KEYS.SEARCH.CLEAR)}
+                                    type="button"
+                                >
+                                    ×
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Search History/Suggestions */}
+                        {showSearchHistory && searchSuggestions.length > 0 && (
+                            <div className="search-suggestions">
+                                <div className="search-suggestions-header">{t(TRANSLATION_KEYS.SEARCH.RECENT_SEARCHES)}</div>
+                                {searchSuggestions.map((suggestion, index) => (
+                                    <div
+                                        key={index}
+                                        className="search-suggestion-item search-result-item"
+                                        onClick={() => {
+                                            setSearchTerm(suggestion);
+                                            handleSearchChange(suggestion);
+                                            setShowSearchHistory(false);
+                                        }}
+                                    >
+                                        <FontAwesomeIcon icon={faSearch} className="suggestion-icon" />
+                                        {suggestion}
+                                    </div>
+                                ))}
+                                <button
+                                    className="clear-history-btn"
+                                    onClick={() => {
+                                        searchManager.clearHistory();
+                                        setSearchSuggestions([]);
+                                    }}
+                                >
+                                    {t(TRANSLATION_KEYS.SEARCH.CLEAR_HISTORY)}
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Search Results Info */}
+                        {searchTerm && (
+                            <div className="search-results-info">
+                                {filteredMenu.length} result{filteredMenu.length !== 1 ? 's' : ''} found
+                                {searchResults.length > 0 && (
+                                    <span className="search-type-info"> • Fuzzy search</span>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    <Menu role="menubar" aria-label="Navigation menu">
                         {filteredMenu.length ? (
                             filteredMenu.map((mainItems, index) => {
+                                const notificationCount = getNotificationCount(mainItems.name);
                                 return mainItems.newRoute ? (
                                     <SubMenu
                                         key={index}
-                                        title={intl.formatMessage({
-                                            id: `${mainItems.title}`,
-                                        })}
+                                        title={
+                                            <div className="d-flex align-items-center justify-content-between w-100">
+                                                <span>{intl.formatMessage({
+                                                    id: `${mainItems.title}`,
+                                                })}</span>
+                                                {notificationCount > 0 && (
+                                                    <span className="notification-badge">
+                                                        {notificationCount > 99 ? '99+' : notificationCount}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        }
                                         className={
                                             location.pathname ===
                                                 mainItems?.subPath
@@ -345,10 +647,13 @@ const AsideMenu = (props) => {
                                             location.pathname ===
                                                 mainItems?.subPath
                                                     ?.smsApiSubPath
-                                                ? "pro-active-sub myDIV"
-                                                : "myDIV"
+                                                ? "pro-active-sub myDIV menu-item-enhanced"
+                                                : "myDIV menu-item-enhanced"
                                         }
-                                        icon={mainItems.fontIcon}
+                                        icon={renderMenuIcon(mainItems.fontIcon, notificationCount > 0, notificationCount)}
+                                        role="menuitem"
+                                        aria-haspopup="true"
+                                        aria-expanded={location.pathname.includes(mainItems.to)}
                                     >
                                         {mainItems.newRoute.map(
                                             (subMainItems, index) => {
@@ -356,15 +661,14 @@ const AsideMenu = (props) => {
                                                 return (
                                                     <MenuItem
                                                         key={index}
-                                                        icon={
-                                                            subMainItems.fontIcon
-                                                        }
+                                                        icon={renderMenuIcon(subMainItems.fontIcon)}
                                                         className={`${
                                                             isMenuCollapse ===
                                                             false
                                                                 ? subMainItems.class
                                                                 : ""
-                                                        } flex-column`}
+                                                        } flex-column menu-item-enhanced`}
+                                                        role="menuitem"
                                                         active={
                                                             location.pathname ===
                                                                 subMainItems.to ||
@@ -391,6 +695,7 @@ const AsideMenu = (props) => {
                                                     >
                                                         <Link
                                                             to={subMainItems.to}
+                                                            className="menu-text"
                                                         >
                                                             {intl.formatMessage(
                                                                 {
@@ -407,12 +712,13 @@ const AsideMenu = (props) => {
                                     mainItems.to !== "/app/pos" && (
                                         <MenuItem
                                             key={index}
-                                            icon={mainItems.fontIcon}
+                                            icon={renderMenuIcon(mainItems.fontIcon, getNotificationCount(mainItems.name) > 0, getNotificationCount(mainItems.name))}
                                             className={`${
                                                 isMenuCollapse === false
                                                     ? mainItems.class
                                                     : ""
-                                            } flex-column`}
+                                            } flex-column menu-item-enhanced`}
+                                            role="menuitem"
                                             active={
                                                 location.pathname ===
                                                     mainItems.to ||
@@ -455,10 +761,17 @@ const AsideMenu = (props) => {
                                                         id
                                             }
                                         >
-                                            <Link to={mainItems.to}>
-                                                {intl.formatMessage({
-                                                    id: `${mainItems.title}`,
-                                                })}
+                                            <Link to={mainItems.to} className="menu-text">
+                                                <span className="d-flex align-items-center justify-content-between w-100">
+                                                    <span>{intl.formatMessage({
+                                                        id: `${mainItems.title}`,
+                                                    })}</span>
+                                                    {getNotificationCount(mainItems.name) > 0 && (
+                                                        <span className="notification-badge">
+                                                            {getNotificationCount(mainItems.name) > 99 ? '99+' : getNotificationCount(mainItems.name)}
+                                                        </span>
+                                                    )}
+                                                </span>
                                             </Link>
                                         </MenuItem>
                                     )
@@ -478,6 +791,18 @@ const AsideMenu = (props) => {
                     isResponsiveMenu === true && "bg-overlay d-block"
                 }`}
                 onClick={menuClick}
+            />
+
+            {/* Sidebar Settings Panel */}
+            <SidebarSettingsPanel
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+            />
+
+            {/* Analytics Dashboard */}
+            <AnalyticsDashboard
+                isOpen={isAnalyticsOpen}
+                onClose={() => setIsAnalyticsOpen(false)}
             />
         </>
     );

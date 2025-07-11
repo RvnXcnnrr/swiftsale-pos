@@ -99,4 +99,16 @@ return [
     'Sale_return_pdf' => 'Sale Return PDF',
     'purchase_return_pdf' => 'Purchase Return PDF',
     'quotation_pdf' => 'Quotation PDF',
+
+    // Auto-save messages
+    'autosave' => [
+        'notification' => [
+            'title' => 'Saved Data Found',
+            'message' => 'We found previously saved data for this form. Would you like to restore it?',
+        ],
+        'button' => [
+            'restore' => 'Restore Data',
+            'discard' => 'Start Fresh',
+        ],
+    ],
 ];

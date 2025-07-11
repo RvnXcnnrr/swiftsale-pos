@@ -34,6 +34,10 @@ import { addUnit } from "../../store/action/unitsAction";
 import { fetchAllVariations } from "../../store/action/variationAction";
 import ReactMultiSelect from "../../shared/select/ReactMultiSelect";
 import { toUpper } from "lodash";
+// Auto-save imports
+import useAutoSave from "../../shared/hooks/useAutoSave";
+import AutoSaveNotification from "../../shared/components/AutoSaveNotification";
+import { AutoSaveInput, AutoSaveTextarea } from "../../shared/components/AutoSaveInput";
 
 const ProductForm = (props) => {
     const {
@@ -61,7 +65,9 @@ const ProductForm = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const variations = useSelector((state) => state.variations);
-    const [productValue, setProductValue] = useState({
+
+    // Initial form data
+    const initialProductData = {
         date: new Date(),
         name: "",
         code: "",
@@ -84,7 +90,16 @@ const ProductForm = (props) => {
             value: 1,
         },
         isEdit: false,
-    });
+    };
+
+    // Auto-save hook for product form
+    const formKey = id ? `product_edit_${id}` : 'product_create';
+    const {
+        formData: productValue,
+        setFormData: setProductValue,
+        clearSavedData,
+        hasSavedData
+    } = useAutoSave(formKey, initialProductData, 1500);
     const [variationTypesData, setVariationTypesData] = useState([]);
     const [singleProductTypeData, setSingleProductTypeData] = useState({
         product_cost: "",
@@ -839,19 +854,40 @@ const ProductForm = (props) => {
         ) {
             if (!disabled) {
                 editMainProduct(id, prepareFormData(), navigate);
+                // Clear auto-save data after successful edit
+                clearSavedData();
             }
         } else {
             if (valid) {
                 productValue.images = multipleFiles;
                 setProductValue(productValue);
                 addProductData(prepareFormData());
+                // Clear auto-save data after successful creation
+                clearSavedData();
             }
         }
+    };
+
+    // Handle auto-save notification actions
+    const handleRestoreData = () => {
+        // Data is already loaded by the useAutoSave hook
+        // Just need to dismiss the notification
+    };
+
+    const handleDiscardData = () => {
+        clearSavedData();
     };
 
     return (
         <div className="card">
             <div className="card-body">
+                {/* Auto-save notification */}
+                <AutoSaveNotification
+                    hasSavedData={hasSavedData && !id} // Only show for new products
+                    onRestore={handleRestoreData}
+                    onDiscard={handleDiscardData}
+                    formName="product"
+                />
                 <Form>
                     <div className="row">
                         <div className="col-xl-8">
@@ -865,7 +901,7 @@ const ProductForm = (props) => {
                                             :{" "}
                                         </label>
                                         <span className="required" />
-                                        <input
+                                        <AutoSaveInput
                                             type="text"
                                             name="name"
                                             value={productValue.name}
@@ -890,10 +926,10 @@ const ProductForm = (props) => {
                                             :{" "}
                                         </label>
                                         <span className="required" />
-                                        <input
+                                        <AutoSaveInput
                                             type="text"
                                             name="code"
-                                            className=" form-control"
+                                            className="form-control"
                                             placeholder={placeholderText(
                                                 "product.input.code.placeholder.label"
                                             )}

@@ -1,0 +1,128 @@
+{
+  "sidebar": {
+    "search": {
+      "placeholder": "Rechercher des éléments de menu (Ctrl+K)",
+      "clear": "Effacer la recherche",
+      "noResults": "Aucun résultat trouvé",
+      "resultsCount": "{count} résultat{count, plural, one {} other {s}} trouvé{count, plural, one {} other {s}}",
+      "fuzzySearch": "Recherche floue",
+      "recentSearches": "Recherches récentes",
+      "clearHistory": "Effacer l'historique",
+      "suggestions": "Suggestions de recherche"
+    },
+    "theme": {
+      "toggle": "Basculer le thème",
+      "switchToLight": "Passer en mode clair",
+      "switchToDark": "Passer en mode sombre",
+      "useSystem": "Utiliser le thème système",
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    },
+    "settings": {
+      "title": "Paramètres de la Barre Latérale",
+      "close": "Fermer les paramètres",
+      "width": "Largeur de la Barre Latérale",
+      "menuStyle": "Style du Menu",
+      "animationSpeed": "Vitesse d'Animation",
+      "showIcons": "Afficher les Icônes du Menu",
+      "showNotifications": "Afficher les Badges de Notification",
+      "compactMode": "Mode Compact",
+      "autoCollapse": "Auto-réduire sur Mobile",
+      "persistState": "Mémoriser l'État Réduit",
+      "resetToDefaults": "Rétablir les Valeurs par Défaut",
+      "styles": {
+        "modern": "Moderne",
+        "classic": "Classique",
+        "minimal": "Minimaliste"
+      },
+      "speeds": {
+        "slow": "Lent",
+        "normal": "Normal",
+        "fast": "Rapide"
+      }
+    },
+    "analytics": {
+      "title": "Analytiques de la Barre Latérale",
+      "close": "Fermer les analytiques",
+      "tabs": {
+        "overview": "Aperçu",
+        "menu": "Utilisation du Menu",
+        "search": "Analytiques de Recherche"
+      },
+      "overview": {
+        "totalSessions": "Sessions Totales",
+        "menuClicks": "Clics du Menu",
+        "searches": "Recherches",
+        "avgSessionTime": "Temps de Session Moyen",
+        "quickAccess": "Accès Rapide",
+        "clicks": "clics"
+      },
+      "menu": {
+        "mostUsed": "Éléments de Menu les Plus Utilisés",
+        "recentlyUsed": "Récemment Utilisés",
+        "usagePattern": "Modèle d'Utilisation"
+      },
+      "search": {
+        "totalSearches": "Recherches Totales",
+        "uniqueQueries": "Requêtes Uniques",
+        "avgResults": "Résultats Moyens",
+        "popularTerms": "Termes de Recherche Populaires",
+        "noResultsQueries": "Requêtes sans Résultats"
+      },
+      "clearData": "Effacer Toutes les Données",
+      "exportData": "Exporter les Données"
+    },
+    "navigation": {
+      "mainNavigation": "Navigation principale",
+      "menuItem": "Élément de menu",
+      "submenu": "Sous-menu",
+      "expandSidebar": "Développer la barre latérale",
+      "collapseSidebar": "Réduire la barre latérale",
+      "openMenu": "Ouvrir le menu",
+      "closeMenu": "Fermer le menu"
+    },
+    "accessibility": {
+      "skipToContent": "Aller au contenu principal",
+      "keyboardShortcuts": "Raccourcis clavier",
+      "searchShortcut": "Appuyez sur Ctrl+K pour rechercher",
+      "escapeShortcut": "Appuyez sur Échap pour fermer",
+      "arrowNavigation": "Utilisez les flèches pour naviguer",
+      "enterToSelect": "Appuyez sur Entrée pour sélectionner"
+    },
+    "notifications": {
+      "newFeature": "Nouvelle fonctionnalité disponible",
+      "updateAvailable": "Mise à jour disponible",
+      "taskComplete": "Tâche terminée",
+      "error": "Une erreur s'est produite",
+      "warning": "Avertissement"
+    },
+    "performance": {
+      "loading": "Chargement...",
+      "loadingMenu": "Chargement des éléments de menu",
+      "searchingItems": "Recherche d'éléments",
+      "optimizing": "Optimisation des performances"
+    },
+    "mobile": {
+      "swipeToOpen": "Glissez vers la droite pour ouvrir le menu",
+      "swipeToClose": "Glissez vers la gauche pour fermer le menu",
+      "tapToSelect": "Appuyez pour sélectionner",
+      "touchGestures": "Gestes tactiles activés"
+    },
+    "errors": {
+      "loadFailed": "Échec du chargement des éléments de menu",
+      "searchFailed": "Échec de la recherche",
+      "settingsSaveFailed": "Échec de la sauvegarde des paramètres",
+      "analyticsLoadFailed": "Échec du chargement des analytiques",
+      "networkError": "Une erreur réseau s'est produite",
+      "retry": "Réessayer",
+      "dismiss": "Ignorer"
+    },
+    "success": {
+      "settingsSaved": "Paramètres sauvegardés avec succès",
+      "dataCleared": "Données effacées avec succès",
+      "themeChanged": "Thème changé avec succès",
+      "searchCompleted": "Recherche terminée"
+    }
+  }
+}

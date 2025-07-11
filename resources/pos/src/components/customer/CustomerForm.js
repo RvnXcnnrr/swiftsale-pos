@@ -12,6 +12,10 @@ import { editCustomer } from "../../store/action/customerAction";
 import ModelFooter from "../../shared/components/modelFooter";
 import ReactDatePicker from "../../shared/datepicker/ReactDatePicker";
 import moment from "moment";
+// Auto-save imports
+import useAutoSave from "../../shared/hooks/useAutoSave";
+import AutoSaveNotification from "../../shared/components/AutoSaveNotification";
+import { AutoSaveInput } from "../../shared/components/AutoSaveInput";
 
 const CustomerForm = (props) => {
     const { addCustomerData, id, editCustomer, singleCustomer } = props;

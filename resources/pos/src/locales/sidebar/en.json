@@ -1,0 +1,128 @@
+{
+  "sidebar": {
+    "search": {
+      "placeholder": "Search menu items (Ctrl+K)",
+      "clear": "Clear search",
+      "noResults": "No results found",
+      "resultsCount": "{count} result{count, plural, one {} other {s}} found",
+      "fuzzySearch": "Fuzzy search",
+      "recentSearches": "Recent searches",
+      "clearHistory": "Clear history",
+      "suggestions": "Search suggestions"
+    },
+    "theme": {
+      "toggle": "Toggle theme",
+      "switchToLight": "Switch to light mode",
+      "switchToDark": "Switch to dark mode",
+      "useSystem": "Use system theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "settings": {
+      "title": "Sidebar Settings",
+      "close": "Close settings",
+      "width": "Sidebar Width",
+      "menuStyle": "Menu Style",
+      "animationSpeed": "Animation Speed",
+      "showIcons": "Show Menu Icons",
+      "showNotifications": "Show Notification Badges",
+      "compactMode": "Compact Mode",
+      "autoCollapse": "Auto-collapse on Mobile",
+      "persistState": "Remember Collapsed State",
+      "resetToDefaults": "Reset to Defaults",
+      "styles": {
+        "modern": "Modern",
+        "classic": "Classic",
+        "minimal": "Minimal"
+      },
+      "speeds": {
+        "slow": "Slow",
+        "normal": "Normal",
+        "fast": "Fast"
+      }
+    },
+    "analytics": {
+      "title": "Sidebar Analytics",
+      "close": "Close analytics",
+      "tabs": {
+        "overview": "Overview",
+        "menu": "Menu Usage",
+        "search": "Search Analytics"
+      },
+      "overview": {
+        "totalSessions": "Total Sessions",
+        "menuClicks": "Menu Clicks",
+        "searches": "Searches",
+        "avgSessionTime": "Avg Session Time",
+        "quickAccess": "Quick Access",
+        "clicks": "clicks"
+      },
+      "menu": {
+        "mostUsed": "Most Used Menu Items",
+        "recentlyUsed": "Recently Used",
+        "usagePattern": "Usage Pattern"
+      },
+      "search": {
+        "totalSearches": "Total Searches",
+        "uniqueQueries": "Unique Queries",
+        "avgResults": "Avg Results",
+        "popularTerms": "Popular Search Terms",
+        "noResultsQueries": "Queries with No Results"
+      },
+      "clearData": "Clear All Data",
+      "exportData": "Export Data"
+    },
+    "navigation": {
+      "mainNavigation": "Main navigation",
+      "menuItem": "Menu item",
+      "submenu": "Submenu",
+      "expandSidebar": "Expand sidebar",
+      "collapseSidebar": "Collapse sidebar",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
+    },
+    "accessibility": {
+      "skipToContent": "Skip to main content",
+      "keyboardShortcuts": "Keyboard shortcuts",
+      "searchShortcut": "Press Ctrl+K to search",
+      "escapeShortcut": "Press Escape to close",
+      "arrowNavigation": "Use arrow keys to navigate",
+      "enterToSelect": "Press Enter to select"
+    },
+    "notifications": {
+      "newFeature": "New feature available",
+      "updateAvailable": "Update available",
+      "taskComplete": "Task completed",
+      "error": "Error occurred",
+      "warning": "Warning"
+    },
+    "performance": {
+      "loading": "Loading...",
+      "loadingMenu": "Loading menu items",
+      "searchingItems": "Searching items",
+      "optimizing": "Optimizing performance"
+    },
+    "mobile": {
+      "swipeToOpen": "Swipe right to open menu",
+      "swipeToClose": "Swipe left to close menu",
+      "tapToSelect": "Tap to select",
+      "touchGestures": "Touch gestures enabled"
+    },
+    "errors": {
+      "loadFailed": "Failed to load menu items",
+      "searchFailed": "Search failed",
+      "settingsSaveFailed": "Failed to save settings",
+      "analyticsLoadFailed": "Failed to load analytics",
+      "networkError": "Network error occurred",
+      "retry": "Retry",
+      "dismiss": "Dismiss"
+    },
+    "success": {
+      "settingsSaved": "Settings saved successfully",
+      "dataCleared": "Data cleared successfully",
+      "themeChanged": "Theme changed successfully",
+      "searchCompleted": "Search completed"
+    }
+  }
+}

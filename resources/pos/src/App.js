@@ -13,6 +13,8 @@ import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import AdminApp from "./AdminApp";
 import { getFiles } from "./locales/index";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { SidebarSettingsProvider } from "./contexts/SidebarSettingsContext";
 
 function App() {
     //do not remove updateLanguag
@@ -121,43 +123,47 @@ function App() {
     }, [updatedLanguage, selectedLanguage]);
 
     return (
-        <div className="d-flex flex-column flex-root">
-            <IntlProvider
-                locale={settingsKey.DEFAULT_LOCALE}
-                messages={messages}
-            >
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route
-                        path="reset-password/:token/:email"
-                        element={<ResetPassword />}
-                    />
-                    <Route
-                        path="forgot-password"
-                        element={<ForgotPassword />}
-                    />
-                    <Route
-                        path="app/*"
-                        element={<AdminApp config={config} />}
-                    />
-                    <Route
-                        path="/"
-                        element={
-                            <Navigate
-                                replace
-                                to={token ? redirectTo : "/login"}
-                            />
+        <ThemeProvider>
+            <SidebarSettingsProvider>
+                <div className="d-flex flex-column flex-root">
+                <IntlProvider
+                    locale={settingsKey.DEFAULT_LOCALE}
+                    messages={messages}
+                >
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route
+                            path="reset-password/:token/:email"
+                            element={<ResetPassword />}
+                        />
+                        <Route
+                            path="forgot-password"
+                            element={<ForgotPassword />}
+                        />
+                        <Route
+                            path="app/*"
+                            element={<AdminApp config={config} />}
+                        />
+                        <Route
+                            path="/"
+                            element={
+                                <Navigate
+                                    replace
+                                    to={token ? redirectTo : "/login"}
+                                />
+                            }
+                        />
+                        <Route path="*" element={<Navigate replace to={"/"} />} />
+                    </Routes>
+                    <Toasts
+                        language={
+                            updatedLanguage ? updatedLanguage : selectedLanguage
                         }
                     />
-                    <Route path="*" element={<Navigate replace to={"/"} />} />
-                </Routes>
-                <Toasts
-                    language={
-                        updatedLanguage ? updatedLanguage : selectedLanguage
-                    }
-                />
-            </IntlProvider>
-        </div>
+                </IntlProvider>
+                </div>
+            </SidebarSettingsProvider>
+        </ThemeProvider>
     );
 }
 

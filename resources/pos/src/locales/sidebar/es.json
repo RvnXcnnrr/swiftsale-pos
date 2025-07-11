@@ -1,0 +1,128 @@
+{
+  "sidebar": {
+    "search": {
+      "placeholder": "Buscar elementos del menú (Ctrl+K)",
+      "clear": "Limpiar búsqueda",
+      "noResults": "No se encontraron resultados",
+      "resultsCount": "{count} resultado{count, plural, one {} other {s}} encontrado{count, plural, one {} other {s}}",
+      "fuzzySearch": "Búsqueda difusa",
+      "recentSearches": "Búsquedas recientes",
+      "clearHistory": "Limpiar historial",
+      "suggestions": "Sugerencias de búsqueda"
+    },
+    "theme": {
+      "toggle": "Cambiar tema",
+      "switchToLight": "Cambiar a modo claro",
+      "switchToDark": "Cambiar a modo oscuro",
+      "useSystem": "Usar tema del sistema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "settings": {
+      "title": "Configuración de la Barra Lateral",
+      "close": "Cerrar configuración",
+      "width": "Ancho de la Barra Lateral",
+      "menuStyle": "Estilo del Menú",
+      "animationSpeed": "Velocidad de Animación",
+      "showIcons": "Mostrar Iconos del Menú",
+      "showNotifications": "Mostrar Insignias de Notificación",
+      "compactMode": "Modo Compacto",
+      "autoCollapse": "Auto-colapsar en Móvil",
+      "persistState": "Recordar Estado Colapsado",
+      "resetToDefaults": "Restablecer a Predeterminados",
+      "styles": {
+        "modern": "Moderno",
+        "classic": "Clásico",
+        "minimal": "Minimalista"
+      },
+      "speeds": {
+        "slow": "Lento",
+        "normal": "Normal",
+        "fast": "Rápido"
+      }
+    },
+    "analytics": {
+      "title": "Analíticas de la Barra Lateral",
+      "close": "Cerrar analíticas",
+      "tabs": {
+        "overview": "Resumen",
+        "menu": "Uso del Menú",
+        "search": "Analíticas de Búsqueda"
+      },
+      "overview": {
+        "totalSessions": "Sesiones Totales",
+        "menuClicks": "Clics del Menú",
+        "searches": "Búsquedas",
+        "avgSessionTime": "Tiempo Promedio de Sesión",
+        "quickAccess": "Acceso Rápido",
+        "clicks": "clics"
+      },
+      "menu": {
+        "mostUsed": "Elementos del Menú Más Utilizados",
+        "recentlyUsed": "Utilizados Recientemente",
+        "usagePattern": "Patrón de Uso"
+      },
+      "search": {
+        "totalSearches": "Búsquedas Totales",
+        "uniqueQueries": "Consultas Únicas",
+        "avgResults": "Resultados Promedio",
+        "popularTerms": "Términos de Búsqueda Populares",
+        "noResultsQueries": "Consultas sin Resultados"
+      },
+      "clearData": "Limpiar Todos los Datos",
+      "exportData": "Exportar Datos"
+    },
+    "navigation": {
+      "mainNavigation": "Navegación principal",
+      "menuItem": "Elemento del menú",
+      "submenu": "Submenú",
+      "expandSidebar": "Expandir barra lateral",
+      "collapseSidebar": "Colapsar barra lateral",
+      "openMenu": "Abrir menú",
+      "closeMenu": "Cerrar menú"
+    },
+    "accessibility": {
+      "skipToContent": "Saltar al contenido principal",
+      "keyboardShortcuts": "Atajos de teclado",
+      "searchShortcut": "Presiona Ctrl+K para buscar",
+      "escapeShortcut": "Presiona Escape para cerrar",
+      "arrowNavigation": "Usa las flechas para navegar",
+      "enterToSelect": "Presiona Enter para seleccionar"
+    },
+    "notifications": {
+      "newFeature": "Nueva función disponible",
+      "updateAvailable": "Actualización disponible",
+      "taskComplete": "Tarea completada",
+      "error": "Ocurrió un error",
+      "warning": "Advertencia"
+    },
+    "performance": {
+      "loading": "Cargando...",
+      "loadingMenu": "Cargando elementos del menú",
+      "searchingItems": "Buscando elementos",
+      "optimizing": "Optimizando rendimiento"
+    },
+    "mobile": {
+      "swipeToOpen": "Desliza hacia la derecha para abrir el menú",
+      "swipeToClose": "Desliza hacia la izquierda para cerrar el menú",
+      "tapToSelect": "Toca para seleccionar",
+      "touchGestures": "Gestos táctiles habilitados"
+    },
+    "errors": {
+      "loadFailed": "Error al cargar elementos del menú",
+      "searchFailed": "Búsqueda fallida",
+      "settingsSaveFailed": "Error al guardar configuración",
+      "analyticsLoadFailed": "Error al cargar analíticas",
+      "networkError": "Ocurrió un error de red",
+      "retry": "Reintentar",
+      "dismiss": "Descartar"
+    },
+    "success": {
+      "settingsSaved": "Configuración guardada exitosamente",
+      "dataCleared": "Datos limpiados exitosamente",
+      "themeChanged": "Tema cambiado exitosamente",
+      "searchCompleted": "Búsqueda completada"
+    }
+  }
+}

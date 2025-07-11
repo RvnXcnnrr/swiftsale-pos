@@ -31,7 +31,6 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-        "rtl": "webpack --config webpack-rtl.config.js",
         "build": "react-scripts --max_old_space_size=4096 build"
     },
     "devDependencies": {
