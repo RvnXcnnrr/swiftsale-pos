@@ -1,6 +1,34 @@
 import databaseService, { STORAGE_KEYS } from './databaseService';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { logAuthOperation } from '../utils/debugLogger';
+
+// Cross-platform storage utility
+const crossPlatformStorage = {
+  async setItem(key, value) {
+    if (Platform.OS === 'web') {
+      localStorage.setItem(key, value);
+    } else {
+      await SecureStore.setItemAsync(key, value);
+    }
+  },
+
+  async getItem(key) {
+    if (Platform.OS === 'web') {
+      return localStorage.getItem(key);
+    } else {
+      return await SecureStore.getItemAsync(key);
+    }
+  },
+
+  async removeItem(key) {
+    if (Platform.OS === 'web') {
+      localStorage.removeItem(key);
+    } else {
+      await SecureStore.deleteItemAsync(key);
+    }
+  }
+};
 
 export const localAuthService = {
   // Login with email and password
@@ -10,6 +38,19 @@ export const localAuthService = {
 
       const users = await databaseService.getAll(STORAGE_KEYS.USERS);
       logAuthOperation('login_users_loaded', { userCount: users.length, users: users.map(u => ({ id: u.id, email: u.email })) });
+
+      // Debug: Log the exact password comparison
+      const foundUser = users.find(u => u.email === email);
+      if (foundUser) {
+        logAuthOperation('login_password_debug', {
+          email,
+          enteredPassword: `"${password}"`,
+          enteredPasswordLength: password.length,
+          storedPassword: `"${foundUser.password}"`,
+          storedPasswordLength: foundUser.password.length,
+          passwordsMatch: foundUser.password === password
+        });
+      }
 
       const user = users.find(u => u.email === email && u.password === password);
 
@@ -29,8 +70,8 @@ export const localAuthService = {
       const token = `token_${user.id}_${Date.now()}`;
 
       // Store token securely
-      await SecureStore.setItemAsync('userToken', token);
-      await SecureStore.setItemAsync('userData', JSON.stringify(user));
+      await crossPlatformStorage.setItem('userToken', token);
+      await crossPlatformStorage.setItem('userData', JSON.stringify(user));
 
       logAuthOperation('login_success', { userId: user.id, token: token.substring(0, 20) + '...' });
 
@@ -54,10 +95,13 @@ export const localAuthService = {
   // Logout
   logout: async () => {
     try {
-      await SecureStore.deleteItemAsync('userToken');
-      await SecureStore.deleteItemAsync('userData');
+      logAuthOperation('logout_start', {});
+      await crossPlatformStorage.removeItem('userToken');
+      await crossPlatformStorage.removeItem('userData');
+      logAuthOperation('logout_success', {});
       return { success: true };
     } catch (error) {
+      logAuthOperation('logout_error', {}, error);
       throw new Error('Logout failed: ' + error.message);
     }
   },
@@ -65,16 +109,16 @@ export const localAuthService = {
   // Check if user is authenticated
   checkAuth: async () => {
     try {
-      const token = await SecureStore.getItemAsync('userToken');
-      const userData = await SecureStore.getItemAsync('userData');
-      
+      const token = await crossPlatformStorage.getItem('userToken');
+      const userData = await crossPlatformStorage.getItem('userData');
+
       if (token && userData) {
         return {
           token,
           user: JSON.parse(userData)
         };
       }
-      
+
       return null;
     } catch (error) {
       return null;

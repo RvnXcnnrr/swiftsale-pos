@@ -80,11 +80,24 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
       // Logout
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(logoutUser.fulfilled, (state) => {
+        state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;
         state.token = null;
         state.error = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        // Even if logout fails, clear the auth state for security
+        state.isAuthenticated = false;
+        state.user = null;
+        state.token = null;
       })
       // Check auth status
       .addCase(checkAuthStatus.fulfilled, (state, action) => {

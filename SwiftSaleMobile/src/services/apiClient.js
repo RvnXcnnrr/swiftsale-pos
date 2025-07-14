@@ -1,6 +1,26 @@
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { API_CONFIG, HTTP_STATUS, ERROR_MESSAGES } from '../constants/api';
+
+// Cross-platform storage utility
+const crossPlatformStorage = {
+  async getItem(key) {
+    if (Platform.OS === 'web') {
+      return localStorage.getItem(key);
+    } else {
+      return await SecureStore.getItemAsync(key);
+    }
+  },
+
+  async removeItem(key) {
+    if (Platform.OS === 'web') {
+      localStorage.removeItem(key);
+    } else {
+      await SecureStore.deleteItemAsync(key);
+    }
+  }
+};
 
 // Create axios instance
 const apiClient = axios.create({
@@ -16,7 +36,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use(
   async (config) => {
     try {
-      const token = await SecureStore.getItemAsync('userToken');
+      const token = await crossPlatformStorage.getItem('userToken');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -46,8 +66,8 @@ apiClient.interceptors.response.use(
     switch (response.status) {
       case HTTP_STATUS.UNAUTHORIZED:
         // Clear stored auth data
-        await SecureStore.deleteItemAsync('userToken');
-        await SecureStore.deleteItemAsync('userData');
+        await crossPlatformStorage.removeItem('userToken');
+        await crossPlatformStorage.removeItem('userData');
         throw new Error(ERROR_MESSAGES.UNAUTHORIZED);
         
       case HTTP_STATUS.FORBIDDEN:
