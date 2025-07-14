@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateProduct, fetchCategories, fetchBrands } from '../../store/slices/productSlice';
 import { colors, spacing, borderRadius } from '../../constants/theme';
 import { logInfo, logError, LOG_CATEGORIES } from '../../utils/debugLogger';
+import ProductImagePicker from '../../components/ImagePicker';
 
 const EditProductScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -44,6 +45,9 @@ const EditProductScreen = ({ navigation, route }) => {
     brand_id: product?.brand?.id?.toString() || '',
     description: product?.description || '',
   });
+
+  // Image state
+  const [selectedImage, setSelectedImage] = useState(product?.image_url || null);
 
   // Validation state
   const [errors, setErrors] = useState({});
@@ -112,11 +116,21 @@ const EditProductScreen = ({ navigation, route }) => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
+  };
+
+  const handleImageSelected = (imageUri) => {
+    setSelectedImage(imageUri);
+    logInfo(LOG_CATEGORIES.PRODUCTS, 'editProduct_image_selected', { imageUri });
+  };
+
+  const handleImageRemoved = () => {
+    setSelectedImage(null);
+    logInfo(LOG_CATEGORIES.PRODUCTS, 'editProduct_image_removed', {});
   };
 
   const handleSubmit = async () => {
@@ -144,7 +158,7 @@ const EditProductScreen = ({ navigation, route }) => {
         category_id: parseInt(formData.category_id),
         brand_id: parseInt(formData.brand_id),
         description: formData.description.trim(),
-        image_url: product?.image_url || `https://via.placeholder.com/150x150?text=${encodeURIComponent(formData.name)}`,
+        image_url: selectedImage || product?.image_url || `https://via.placeholder.com/150x150?text=${encodeURIComponent(formData.name)}`,
         is_active: 1,
         updated_at: new Date().toISOString(),
       };
@@ -192,6 +206,13 @@ const EditProductScreen = ({ navigation, route }) => {
               Product ID: {productId}
             </Text>
             <Divider style={styles.divider} />
+
+            {/* Product Image */}
+            <ProductImagePicker
+              imageUri={selectedImage}
+              onImageSelected={handleImageSelected}
+              onImageRemoved={handleImageRemoved}
+            />
 
             {/* Product Name */}
             <TextInput

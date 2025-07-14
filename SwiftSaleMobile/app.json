@@ -36,10 +36,30 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-
       "expo-secure-store",
       "expo-sqlite",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you select product images.",
+          "cameraPermission": "The app accesses your camera to let you take product photos."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow SwiftSale to access your camera to take product photos."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow SwiftSale to access your photo library to select product images.",
+          "savePhotosPermission": "Allow SwiftSale to save product photos to your photo library.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
     ]
   }
 }

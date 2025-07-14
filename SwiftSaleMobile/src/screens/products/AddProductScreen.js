@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, fetchCategories, fetchBrands } from '../../store/slices/productSlice';
 import { colors, spacing, borderRadius } from '../../constants/theme';
 import { logInfo, logError, LOG_CATEGORIES } from '../../utils/debugLogger';
+import ProductImagePicker from '../../components/ImagePicker';
 
 const AddProductScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -41,6 +42,9 @@ const AddProductScreen = ({ navigation }) => {
     brand_id: '',
     description: '',
   });
+
+  // Image state
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Validation state
   const [errors, setErrors] = useState({});
@@ -129,11 +133,21 @@ const AddProductScreen = ({ navigation }) => {
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
+  };
+
+  const handleImageSelected = (imageUri) => {
+    setSelectedImage(imageUri);
+    logInfo(LOG_CATEGORIES.PRODUCTS, 'addProduct_image_selected', { imageUri });
+  };
+
+  const handleImageRemoved = () => {
+    setSelectedImage(null);
+    logInfo(LOG_CATEGORIES.PRODUCTS, 'addProduct_image_removed', {});
   };
 
   const handleSubmit = async () => {
@@ -160,7 +174,7 @@ const AddProductScreen = ({ navigation }) => {
         category_id: parseInt(formData.category_id),
         brand_id: parseInt(formData.brand_id),
         description: formData.description.trim(),
-        image_url: `https://via.placeholder.com/150x150?text=${encodeURIComponent(formData.name)}`,
+        image_url: selectedImage || `https://via.placeholder.com/150x150?text=${encodeURIComponent(formData.name)}`,
         is_active: 1,
       };
 
@@ -191,6 +205,7 @@ const AddProductScreen = ({ navigation }) => {
                 brand_id: '',
                 description: '',
               });
+              setSelectedImage(null);
             },
           },
           {
@@ -222,6 +237,13 @@ const AddProductScreen = ({ navigation }) => {
               Add New Product
             </Text>
             <Divider style={styles.divider} />
+
+            {/* Product Image */}
+            <ProductImagePicker
+              imageUri={selectedImage}
+              onImageSelected={handleImageSelected}
+              onImageRemoved={handleImageRemoved}
+            />
 
             {/* Product Name */}
             <TextInput
