@@ -70,12 +70,6 @@ const ProductsScreen = ({ navigation }) => {
           <Text variant="bodySmall" style={styles.stockText} numberOfLines={1} ellipsizeMode="tail">
             Stock: {item.stock_quantity || 0}
           </Text>
-
-          {item.category && (
-            <Chip mode="outlined" compact style={styles.categoryChip}>
-              <Text numberOfLines={1} ellipsizeMode="tail">{item.category.name}</Text>
-            </Chip>
-          )}
         </View>
       </Card.Content>
     </Card>

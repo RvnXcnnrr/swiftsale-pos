@@ -26,14 +26,6 @@ const ProductCard = ({ product, onAddToCart, isInCart }) => {
             Code: {product.code}
           </Text>
 
-          {product.category && (
-            <View style={styles.categoryContainer}>
-              <Text style={styles.categoryText} numberOfLines={1} ellipsizeMode="tail">
-                {product.category.name}
-              </Text>
-            </View>
-          )}
-
           <View style={styles.priceRow}>
             <Text variant="titleMedium" style={styles.price}>
               ₱{product.price?.toFixed(2) || '0.00'}
@@ -100,26 +92,6 @@ const styles = StyleSheet.create({
   code: {
     color: colors.gray[600],
     marginBottom: spacing.xs,
-  },
-  categoryContainer: {
-    alignSelf: 'flex-start',
-    marginBottom: spacing.xs,
-    backgroundColor: colors.primary + '15',
-    borderRadius: 10,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderWidth: 1,
-    borderColor: colors.primary + '30',
-    maxWidth: '100%',
-    overflow: 'hidden',
-  },
-  categoryText: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: colors.primary,
-    textAlign: 'center',
-    lineHeight: 12,
-    flexShrink: 1,
   },
   priceRow: {
     flexDirection: 'row',

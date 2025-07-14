@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Platform } from 'react-native';
 import { Text, Card, List, Switch, Button } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../store/slices/authSlice';
@@ -11,18 +11,27 @@ const SettingsScreen = () => {
   const { isOnline, lastSyncTime } = useSelector((state) => state.offline);
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: () => dispatch(logoutUser()),
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      // Use web-compatible confirmation dialog
+      const confirmed = window.confirm('Are you sure you want to logout?');
+      if (confirmed) {
+        dispatch(logoutUser());
+      }
+    } else {
+      // Use React Native Alert for mobile
+      Alert.alert(
+        'Logout',
+        'Are you sure you want to logout?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Logout',
+            style: 'destructive',
+            onPress: () => dispatch(logoutUser()),
+          },
+        ]
+      );
+    }
   };
 
   return (
