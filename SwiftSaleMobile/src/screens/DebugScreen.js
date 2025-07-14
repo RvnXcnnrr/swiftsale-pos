@@ -5,6 +5,7 @@ import databaseService, { STORAGE_KEYS } from '../services/databaseService';
 import { localAuthService } from '../services/localAuthService';
 import { dataInitService } from '../services/dataInitService';
 import debugLogger, { LOG_CATEGORIES, DEBUG_LEVELS } from '../utils/debugLogger';
+import { salesTestUtils } from '../utils/salesTestUtils';
 
 const DebugScreen = () => {
   const [users, setUsers] = useState([]);
@@ -104,6 +105,63 @@ const DebugScreen = () => {
     }
   };
 
+  const testSalesWorkflow = async () => {
+    try {
+      setLoading(true);
+      const result = await salesTestUtils.testSalesWorkflow();
+
+      if (result.success) {
+        Alert.alert(
+          'Sales Test Successful!',
+          `Sale created with ID: ${result.saleId}\nVerification: ${result.verification.allChecksPass ? 'PASSED' : 'FAILED'}`
+        );
+      } else {
+        Alert.alert('Sales Test Failed', result.error);
+      }
+    } catch (error) {
+      console.error('Sales test failed:', error);
+      Alert.alert('Sales Test Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const testStockValidation = async () => {
+    try {
+      setLoading(true);
+      const result = await salesTestUtils.testStockValidation();
+
+      if (result.success) {
+        Alert.alert('Stock Validation Test Passed!', result.message);
+      } else {
+        Alert.alert('Stock Validation Test Failed', result.error);
+      }
+    } catch (error) {
+      console.error('Stock validation test failed:', error);
+      Alert.alert('Stock Validation Test Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const runAllSalesTests = async () => {
+    try {
+      setLoading(true);
+      const results = await salesTestUtils.runAllTests();
+
+      const message = `All Tests: ${results.allTestsPassed ? 'PASSED' : 'FAILED'}\n\n` +
+        `Sales Workflow: ${results.results.salesWorkflow.success ? 'PASSED' : 'FAILED'}\n` +
+        `Stock Validation: ${results.results.stockValidation.success ? 'PASSED' : 'FAILED'}`;
+
+      Alert.alert('Sales Tests Complete', message);
+    } catch (error) {
+      console.error('Sales tests failed:', error);
+      Alert.alert('Sales Tests Failed', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadLogs();
     const interval = setInterval(loadLogs, 2000); // Refresh every 2 seconds
@@ -161,6 +219,41 @@ const DebugScreen = () => {
             buttonColor="#51cf66"
           >
             Test Login (admin@swiftsale.com / admin123)
+          </Button>
+        </Card.Content>
+      </Card>
+
+      <Card style={{ marginBottom: 16 }}>
+        <Card.Content>
+          <Text style={{ marginBottom: 16, fontSize: 16, fontWeight: 'bold' }}>Sales Process Testing</Text>
+
+          <Button
+            mode="contained"
+            onPress={testSalesWorkflow}
+            loading={loading}
+            style={{ marginBottom: 8 }}
+            buttonColor="#4caf50"
+          >
+            Test Complete Sales Workflow
+          </Button>
+
+          <Button
+            mode="contained"
+            onPress={testStockValidation}
+            loading={loading}
+            style={{ marginBottom: 8 }}
+            buttonColor="#2196f3"
+          >
+            Test Stock Validation
+          </Button>
+
+          <Button
+            mode="contained"
+            onPress={runAllSalesTests}
+            loading={loading}
+            buttonColor="#ff9800"
+          >
+            Run All Sales Tests
           </Button>
         </Card.Content>
       </Card>

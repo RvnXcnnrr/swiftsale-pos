@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { Text, Card, Searchbar, Chip } from 'react-native-paper';
+import { Text, Card, Searchbar, Chip, FAB, IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts, fetchCategories, setFilters } from '../../store/slices/productSlice';
 import { colors, spacing, borderRadius } from '../../constants/theme';
 
-const ProductsScreen = () => {
+const ProductsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { products, categories, isLoading, pagination } = useSelector((state) => state.products);
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -46,12 +46,20 @@ const ProductsScreen = () => {
     <Card style={styles.productCard}>
       <Card.Content>
         <View style={styles.productHeader}>
-          <Text variant="titleMedium" style={styles.productName} numberOfLines={2} ellipsizeMode="tail">
-            {item.name}
-          </Text>
-          <Text variant="titleMedium" style={styles.productPrice}>
-            ${item.price?.toFixed(2)}
-          </Text>
+          <View style={styles.productInfo}>
+            <Text variant="titleMedium" style={styles.productName} numberOfLines={2} ellipsizeMode="tail">
+              {item.name}
+            </Text>
+            <Text variant="titleMedium" style={styles.productPrice}>
+              ₱{item.price?.toFixed(2)}
+            </Text>
+          </View>
+          <IconButton
+            icon="pencil"
+            size={20}
+            onPress={() => navigation.navigate('EditProduct', { productId: item.id, product: item })}
+            style={styles.editButton}
+          />
         </View>
 
         <Text variant="bodySmall" style={styles.productCode} numberOfLines={1} ellipsizeMode="tail">
@@ -126,6 +134,13 @@ const ProductsScreen = () => {
           )
         }
       />
+
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => navigation.navigate('AddProduct')}
+        label="Add Product"
+      />
     </View>
   );
 };
@@ -168,11 +183,21 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: spacing.sm,
   },
+  productInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   productName: {
     flex: 1,
     fontWeight: 'bold',
     color: colors.dark,
     marginRight: spacing.md,
+  },
+  editButton: {
+    margin: 0,
+    backgroundColor: colors.gray[100],
   },
   productPrice: {
     fontWeight: 'bold',
@@ -201,6 +226,13 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: colors.gray[600],
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.primary,
   },
 });
 

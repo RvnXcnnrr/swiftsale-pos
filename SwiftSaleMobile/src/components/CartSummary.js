@@ -16,7 +16,7 @@ const CartSummary = ({ itemCount, total, onPress }) => {
                 {itemCount} {itemCount === 1 ? 'item' : 'items'}
               </Text>
               <Text variant="titleMedium" style={styles.total}>
-                ${total.toFixed(2)}
+                ₱{total.toFixed(2)}
               </Text>
             </View>
           </View>

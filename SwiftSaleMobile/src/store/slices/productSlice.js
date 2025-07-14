@@ -45,6 +45,30 @@ export const fetchBrands = createAsyncThunk(
   }
 );
 
+export const addProduct = createAsyncThunk(
+  'products/addProduct',
+  async (productData, { rejectWithValue }) => {
+    try {
+      const response = await localProductService.addProduct(productData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to add product');
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  'products/updateProduct',
+  async ({ id, productData }, { rejectWithValue }) => {
+    try {
+      const response = await localProductService.updateProduct(id, productData);
+      return { id, ...productData };
+    } catch (error) {
+      return rejectWithValue(error.message || 'Failed to update product');
+    }
+  }
+);
+
 const initialState = {
   products: [],
   categories: [],
@@ -139,6 +163,48 @@ const productSlice = createSlice({
       // Fetch brands
       .addCase(fetchBrands.fulfilled, (state, action) => {
         state.brands = action.payload;
+      })
+
+      // Add product
+      .addCase(addProduct.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(addProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Add the new product to the beginning of the products array
+        state.products.unshift(action.payload);
+        // Update pagination
+        state.pagination.totalItems += 1;
+      })
+      .addCase(addProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+
+      // Update product
+      .addCase(updateProduct.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Find and update the product in the products array
+        const index = state.products.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) {
+          // Transform the updated product data to match the display format
+          const updatedProduct = {
+            ...state.products[index],
+            ...action.payload,
+            category: state.categories.find(c => c.id === action.payload.category_id),
+            brand: state.brands.find(b => b.id === action.payload.brand_id),
+          };
+          state.products[index] = updatedProduct;
+        }
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });

@@ -36,7 +36,7 @@ const ProductCard = ({ product, onAddToCart, isInCart }) => {
 
           <View style={styles.priceRow}>
             <Text variant="titleMedium" style={styles.price}>
-              ${product.price?.toFixed(2) || '0.00'}
+              ₱{product.price?.toFixed(2) || '0.00'}
             </Text>
 
             {isOutOfStock && (

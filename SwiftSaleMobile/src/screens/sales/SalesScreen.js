@@ -63,7 +63,7 @@ const SalesScreen = () => {
             Sale #{item.id}
           </Text>
           <Text variant="titleMedium" style={styles.saleAmount}>
-            ${item.grand_total?.toFixed(2)}
+            ₱{item.grand_total?.toFixed(2)}
           </Text>
         </View>
         

@@ -31,7 +31,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
           {item.code}
         </Text>
         <Text variant="bodyMedium" style={styles.price} numberOfLines={1} ellipsizeMode="tail">
-          ${item.price?.toFixed(2)} each
+          ₱{item.price?.toFixed(2)} each
         </Text>
       </View>
       
@@ -65,7 +65,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
         
         <View style={styles.rightSection}>
           <Text variant="titleMedium" style={styles.total}>
-            ${item.total?.toFixed(2)}
+            ₱{item.total?.toFixed(2)}
           </Text>
           
           <IconButton

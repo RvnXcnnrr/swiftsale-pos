@@ -1,9 +1,9 @@
 // Utility functions for formatting data
 
-export const formatCurrency = (amount, currency = 'USD') => {
-  if (amount === null || amount === undefined) return '$0.00';
-  
-  return new Intl.NumberFormat('en-US', {
+export const formatCurrency = (amount, currency = 'PHP') => {
+  if (amount === null || amount === undefined) return '₱0.00';
+
+  return new Intl.NumberFormat('en-PH', {
     style: 'currency',
     currency: currency,
   }).format(amount);

@@ -78,13 +78,13 @@ const DashboardScreen = ({ navigation }) => {
         <View style={styles.statsGrid}>
           <StatCard
             title="Today's Sales"
-            value={`$${dashboardStats.todaySales?.toFixed(2) || '0.00'}`}
+            value={`₱${dashboardStats.todaySales?.toFixed(2) || '0.00'}`}
             icon="today"
             color={colors.success}
           />
           <StatCard
             title="Total Revenue"
-            value={`$${dashboardStats.totalRevenue?.toFixed(2) || '0.00'}`}
+            value={`₱${dashboardStats.totalRevenue?.toFixed(2) || '0.00'}`}
             icon="trending-up"
             color={colors.primary}
           />

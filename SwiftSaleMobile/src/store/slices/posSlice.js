@@ -1,14 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { localPosService } from '../../services/localPosService';
+import { logInfo, logError, LOG_CATEGORIES } from '../../utils/debugLogger';
 
 // Async thunks
 export const processSale = createAsyncThunk(
   'pos/processSale',
   async (saleData, { rejectWithValue }) => {
     try {
+      logInfo(LOG_CATEGORIES.SALES, 'processSale_start', {
+        itemCount: saleData.sale_items?.length || 0,
+        grandTotal: saleData.grand_total,
+        paymentType: saleData.payment_type
+      });
+
       const response = await localPosService.createSale(saleData);
+
+      logInfo(LOG_CATEGORIES.SALES, 'processSale_success', {
+        saleId: response.id,
+        total: response.grand_total
+      });
+
       return response;
     } catch (error) {
+      logError(LOG_CATEGORIES.SALES, 'processSale_failed', { saleData }, error);
       return rejectWithValue(error.message || 'Failed to process sale');
     }
   }

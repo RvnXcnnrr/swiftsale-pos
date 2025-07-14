@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { logInfo, logError, LOG_CATEGORIES } from '../../utils/debugLogger';
 
 const initialState = {
   items: [],
@@ -19,18 +20,35 @@ const cartSlice = createSlice({
     addToCart: (state, action) => {
       const product = action.payload;
       const existingItem = state.items.find(item => item.id === product.id);
-      
+
+      logInfo(LOG_CATEGORIES.POS, 'addToCart', {
+        productId: product.id,
+        productName: product.name,
+        existingQuantity: existingItem?.quantity || 0,
+        stockQuantity: product.stock_quantity
+      });
+
       if (existingItem) {
         existingItem.quantity += 1;
         existingItem.total = existingItem.quantity * existingItem.price;
+        logInfo(LOG_CATEGORIES.POS, 'addToCart_updated_existing', {
+          productId: product.id,
+          newQuantity: existingItem.quantity,
+          newTotal: existingItem.total
+        });
       } else {
         state.items.push({
           ...product,
           quantity: 1,
           total: product.price,
         });
+        logInfo(LOG_CATEGORIES.POS, 'addToCart_added_new', {
+          productId: product.id,
+          quantity: 1,
+          total: product.price
+        });
       }
-      
+
       cartSlice.caseReducers.calculateTotals(state);
     },
     
@@ -88,12 +106,27 @@ const cartSlice = createSlice({
     },
     
     calculateTotals: (state) => {
+      const previousSubtotal = state.subtotal;
+      const previousTotal = state.total;
+
       state.subtotal = state.items.reduce((sum, item) => sum + item.total, 0);
-      
+
       const discountAmount = (state.subtotal * state.discount) / 100;
       const taxAmount = ((state.subtotal - discountAmount) * state.tax) / 100;
-      
+
       state.total = state.subtotal - discountAmount + taxAmount + state.shipping;
+
+      logInfo(LOG_CATEGORIES.POS, 'calculateTotals', {
+        itemCount: state.items.length,
+        subtotal: state.subtotal,
+        discount: state.discount,
+        discountAmount,
+        tax: state.tax,
+        taxAmount,
+        shipping: state.shipping,
+        total: state.total,
+        changed: previousSubtotal !== state.subtotal || previousTotal !== state.total
+      });
     },
   },
 });

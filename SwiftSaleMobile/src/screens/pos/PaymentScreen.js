@@ -9,7 +9,7 @@ import CartItem from '../../components/CartItem';
 
 const PaymentScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { items, subtotal, total, discount, tax, customer } = useSelector((state) => state.cart);
+  const { items, subtotal, total, discount, tax, shipping, customer, notes: cartNotes } = useSelector((state) => state.cart);
   const { isProcessing } = useSelector((state) => state.pos);
   
   const [paymentMethod, setPaymentMethod] = useState('cash');
@@ -39,7 +39,18 @@ const PaymentScreen = ({ navigation }) => {
   };
 
   const handleProcessSale = async () => {
+    console.log('🔄 [PaymentScreen] Processing sale started...', {
+      itemsCount: items.length,
+      subtotal,
+      total,
+      receivedAmount,
+      paymentMethod,
+      discount,
+      tax
+    });
+
     if (items.length === 0) {
+      console.log('❌ [PaymentScreen] Cart is empty');
       Alert.alert('Error', 'Cart is empty');
       return;
     }
@@ -47,10 +58,36 @@ const PaymentScreen = ({ navigation }) => {
     if (paymentMethod === 'cash') {
       const received = parseFloat(receivedAmount) || 0;
       if (received < total) {
+        console.log('❌ [PaymentScreen] Insufficient payment', { received, total });
         Alert.alert('Error', 'Received amount must be greater than or equal to total');
         return;
       }
     }
+
+    // Validate stock availability before processing
+    console.log('🔍 [PaymentScreen] Validating stock availability...');
+    for (const item of items) {
+      if (item.stock_quantity < item.quantity) {
+        console.log('❌ [PaymentScreen] Insufficient stock', {
+          productId: item.id,
+          productName: item.name,
+          available: item.stock_quantity,
+          requested: item.quantity
+        });
+        Alert.alert('Error', `Insufficient stock for ${item.name}. Available: ${item.stock_quantity}, Requested: ${item.quantity}`);
+        return;
+      }
+    }
+
+    console.log('✅ [PaymentScreen] Validation passed, creating sale data...');
+
+    // Calculate amounts properly
+    const discountAmount = (subtotal * discount) / 100;
+    const taxableAmount = subtotal - discountAmount;
+    const taxAmount = (taxableAmount * tax) / 100;
+    const grandTotal = taxableAmount + taxAmount + shipping;
+    const receivedAmountValue = parseFloat(receivedAmount) || grandTotal;
+    const changeAmount = paymentMethod === 'cash' ? Math.max(0, receivedAmountValue - grandTotal) : 0;
 
     const saleData = {
       customer_id: customer?.id || null,
@@ -61,11 +98,14 @@ const PaymentScreen = ({ navigation }) => {
         price: item.price,
         total: item.total,
       })),
-      discount,
+      subtotal: subtotal,
+      discount: discount,
       tax_rate: tax,
-      tax_amount: (subtotal * tax) / 100,
-      grand_total: total,
-      received_amount: parseFloat(receivedAmount) || total,
+      tax_amount: taxAmount,
+      shipping: shipping,
+      grand_total: grandTotal,
+      received_amount: receivedAmountValue,
+      change_amount: changeAmount,
       payment_type: paymentMethod,
       payment_status: 1, // Paid
       status: 1, // Completed
@@ -74,10 +114,17 @@ const PaymentScreen = ({ navigation }) => {
     };
 
     try {
+      console.log('🚀 [PaymentScreen] Dispatching processSale action...', saleData);
       const result = await dispatch(processSale(saleData)).unwrap();
+      console.log('✅ [PaymentScreen] Sale processed successfully!', result);
+
+      console.log('🧹 [PaymentScreen] Clearing cart...');
       dispatch(clearCart());
+
+      console.log('📄 [PaymentScreen] Navigating to receipt...', { saleId: result.id });
       navigation.navigate('Receipt', { sale: result });
     } catch (error) {
+      console.error('❌ [PaymentScreen] Sale processing failed:', error);
       Alert.alert('Error', error || 'Failed to process sale');
     }
   };
@@ -129,7 +176,7 @@ const PaymentScreen = ({ navigation }) => {
           
           <View style={styles.summaryRow}>
             <Text>Subtotal:</Text>
-            <Text>${subtotal.toFixed(2)}</Text>
+            <Text>₱{subtotal.toFixed(2)}</Text>
           </View>
           
           <View style={styles.inputRow}>
@@ -161,7 +208,7 @@ const PaymentScreen = ({ navigation }) => {
           <View style={styles.totalRow}>
             <Text variant="titleMedium">Total:</Text>
             <Text variant="titleMedium" style={styles.totalAmount}>
-              ${total.toFixed(2)}
+              ₱{total.toFixed(2)}
             </Text>
           </View>
         </Card.Content>
@@ -205,7 +252,7 @@ const PaymentScreen = ({ navigation }) => {
                 <View style={styles.changeRow}>
                   <Text variant="titleMedium">Change:</Text>
                   <Text variant="titleMedium" style={styles.changeAmount}>
-                    ${changeAmount.toFixed(2)}
+                    ₱{changeAmount.toFixed(2)}
                   </Text>
                 </View>
               )}
@@ -233,7 +280,7 @@ const PaymentScreen = ({ navigation }) => {
           style={styles.processButton}
           contentStyle={styles.processButtonContent}
         >
-          Process Sale - ${total.toFixed(2)}
+          Process Sale - ₱{total.toFixed(2)}
         </Button>
       </View>
     </ScrollView>

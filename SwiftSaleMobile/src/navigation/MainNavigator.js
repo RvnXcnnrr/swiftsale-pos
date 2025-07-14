@@ -8,6 +8,8 @@ import { colors } from '../constants/theme';
 import DashboardScreen from '../screens/DashboardScreen';
 import POSScreen from '../screens/pos/POSScreen';
 import ProductsScreen from '../screens/products/ProductsScreen';
+import AddProductScreen from '../screens/products/AddProductScreen';
+import EditProductScreen from '../screens/products/EditProductScreen';
 import SalesScreen from '../screens/sales/SalesScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
@@ -46,10 +48,20 @@ const POSStack = () => (
 
 const ProductsStack = () => (
   <Stack.Navigator>
-    <Stack.Screen 
-      name="ProductsMain" 
-      component={ProductsScreen} 
+    <Stack.Screen
+      name="ProductsMain"
+      component={ProductsScreen}
       options={{ title: 'Products' }}
+    />
+    <Stack.Screen
+      name="AddProduct"
+      component={AddProductScreen}
+      options={{ title: 'Add Product' }}
+    />
+    <Stack.Screen
+      name="EditProduct"
+      component={EditProductScreen}
+      options={{ title: 'Edit Product' }}
     />
   </Stack.Navigator>
 );

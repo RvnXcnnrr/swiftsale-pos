@@ -37,8 +37,8 @@ const ReceiptScreen = ({ route, navigation }) => {
       <tr>
         <td>${item.product?.name || 'Product'}</td>
         <td style="text-align: center;">${item.quantity}</td>
-        <td style="text-align: right;">$${item.price?.toFixed(2)}</td>
-        <td style="text-align: right;">$${item.total?.toFixed(2)}</td>
+        <td style="text-align: right;">₱${item.price?.toFixed(2)}</td>
+        <td style="text-align: right;">₱${item.total?.toFixed(2)}</td>
       </tr>
     `).join('');
 
@@ -90,23 +90,23 @@ const ReceiptScreen = ({ route, navigation }) => {
           <table>
             <tr>
               <td><strong>Subtotal:</strong></td>
-              <td style="text-align: right;"><strong>$${(sale.grand_total - (sale.tax_amount || 0)).toFixed(2)}</strong></td>
+              <td style="text-align: right;"><strong>₱${(sale.grand_total - (sale.tax_amount || 0)).toFixed(2)}</strong></td>
             </tr>
             ${sale.discount > 0 ? `
               <tr>
                 <td>Discount (${sale.discount}%):</td>
-                <td style="text-align: right;">-$${((sale.grand_total - (sale.tax_amount || 0)) * sale.discount / 100).toFixed(2)}</td>
+                <td style="text-align: right;">-₱${((sale.grand_total - (sale.tax_amount || 0)) * sale.discount / 100).toFixed(2)}</td>
               </tr>
             ` : ''}
             ${sale.tax_amount > 0 ? `
               <tr>
                 <td>Tax:</td>
-                <td style="text-align: right;">$${sale.tax_amount.toFixed(2)}</td>
+                <td style="text-align: right;">₱${sale.tax_amount.toFixed(2)}</td>
               </tr>
             ` : ''}
             <tr class="total-row">
               <td><strong>Total:</strong></td>
-              <td style="text-align: right;"><strong>$${sale.grand_total.toFixed(2)}</strong></td>
+              <td style="text-align: right;"><strong>₱${sale.grand_total.toFixed(2)}</strong></td>
             </tr>
             <tr>
               <td>Payment Method:</td>
@@ -115,11 +115,11 @@ const ReceiptScreen = ({ route, navigation }) => {
             ${sale.received_amount ? `
               <tr>
                 <td>Received:</td>
-                <td style="text-align: right;">$${sale.received_amount.toFixed(2)}</td>
+                <td style="text-align: right;">₱${sale.received_amount.toFixed(2)}</td>
               </tr>
               <tr>
                 <td>Change:</td>
-                <td style="text-align: right;">$${(sale.received_amount - sale.grand_total).toFixed(2)}</td>
+                <td style="text-align: right;">₱${(sale.received_amount - sale.grand_total).toFixed(2)}</td>
               </tr>
             ` : ''}
           </table>
@@ -178,11 +178,11 @@ const ReceiptScreen = ({ route, navigation }) => {
                 <View style={styles.itemInfo}>
                   <Text variant="bodyLarge">{item.product?.name || 'Product'}</Text>
                   <Text variant="bodySmall" style={styles.itemDetails}>
-                    {item.quantity} × ${item.price?.toFixed(2)}
+                    {item.quantity} × ₱{item.price?.toFixed(2)}
                   </Text>
                 </View>
                 <Text variant="bodyLarge" style={styles.itemTotal}>
-                  ${item.total?.toFixed(2)}
+                  ₱{item.total?.toFixed(2)}
                 </Text>
               </View>
             ))}
@@ -194,7 +194,7 @@ const ReceiptScreen = ({ route, navigation }) => {
             <View style={styles.summaryRow}>
               <Text variant="bodyLarge">Subtotal:</Text>
               <Text variant="bodyLarge">
-                ${(sale.grand_total - (sale.tax_amount || 0)).toFixed(2)}
+                ₱{(sale.grand_total - (sale.tax_amount || 0)).toFixed(2)}
               </Text>
             </View>
             
@@ -202,7 +202,7 @@ const ReceiptScreen = ({ route, navigation }) => {
               <View style={styles.summaryRow}>
                 <Text variant="bodyMedium">Discount ({sale.discount}%):</Text>
                 <Text variant="bodyMedium">
-                  -${((sale.grand_total - (sale.tax_amount || 0)) * sale.discount / 100).toFixed(2)}
+                  -₱{((sale.grand_total - (sale.tax_amount || 0)) * sale.discount / 100).toFixed(2)}
                 </Text>
               </View>
             )}
@@ -210,14 +210,14 @@ const ReceiptScreen = ({ route, navigation }) => {
             {sale.tax_amount > 0 && (
               <View style={styles.summaryRow}>
                 <Text variant="bodyMedium">Tax:</Text>
-                <Text variant="bodyMedium">${sale.tax_amount.toFixed(2)}</Text>
+                <Text variant="bodyMedium">₱{sale.tax_amount.toFixed(2)}</Text>
               </View>
             )}
             
             <View style={styles.totalRow}>
               <Text variant="titleLarge" style={styles.totalText}>Total:</Text>
               <Text variant="titleLarge" style={styles.totalAmount}>
-                ${sale.grand_total.toFixed(2)}
+                ₱{sale.grand_total.toFixed(2)}
               </Text>
             </View>
             
@@ -232,12 +232,12 @@ const ReceiptScreen = ({ route, navigation }) => {
               <>
                 <View style={styles.summaryRow}>
                   <Text variant="bodyMedium">Received:</Text>
-                  <Text variant="bodyMedium">${sale.received_amount.toFixed(2)}</Text>
+                  <Text variant="bodyMedium">₱{sale.received_amount.toFixed(2)}</Text>
                 </View>
                 <View style={styles.summaryRow}>
                   <Text variant="bodyMedium">Change:</Text>
                   <Text variant="bodyMedium">
-                    ${(sale.received_amount - sale.grand_total).toFixed(2)}
+                    ₱{(sale.received_amount - sale.grand_total).toFixed(2)}
                   </Text>
                 </View>
               </>
